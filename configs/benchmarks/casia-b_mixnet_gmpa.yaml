@@ -1,0 +1,92 @@
+DATA_ROOT: '/data/makang/data/'
+LOGS_ROOT: '/home/makang/code/release/FastGait/records'
+
+MODEL:
+  # architecture
+  meta_arch: 'basic'
+  back_bone: 'mixnet'
+  head_name: 'gmpa'
+
+  set_channel: [64, 128, 256]
+  num_classes: 73
+  num_parts: [64]
+  embd_feature: 256
+  dropout: 0.
+  with_glob: False
+
+  sync_bn: True
+  samples_per_bn: 128
+
+  # pretraining
+  pretrained: null
+
+DATA:
+
+  name: 'CASIA-B'
+  height: 64
+  width: 44
+
+  TRAIN:
+    
+    sample_type: 'continuous'
+    sample_num: null
+
+    # augmentation
+    PIPLINE: null
+
+TRAIN:
+  seed: 1
+  deterministic: True
+  dist_cuda: True
+  amp: True
+
+  # datasets
+  datasets: {'CASIA-B': 'train',}
+
+  epochs: 40 
+  iters: 1000 
+
+  LOSS:
+    losses: {'triplet': 1.0, 'cross_entropy': 0.3}
+    margin: 0.3
+    temp: 0.05
+    momentum: 0.2
+
+  # validate
+  val_dataset: 'CASIA-B'
+  val_freq: 10
+
+  # sampler
+  SAMPLER:
+    num_instances: 16
+    is_shuffle: True
+
+  # data loader
+  LOADER:
+    samples_per_gpu: 16
+    workers_per_gpu: 2
+
+  # optim
+  OPTIM:
+    optim: 'sgd'  # 'sgd' 'adam'
+    lr: 0.1 # 0.1, 0.00035
+    weight_decay: 0.0005
+
+  SCHEDULER:
+    lr_scheduler: 'single_step'
+    stepsize: 10
+    gamma: 0.1
+
+TEST:
+  # datasets
+  datasets: ['CASIA-B',] 
+
+  # data loader
+  LOADER:
+    samples_per_gpu: 1
+    workers_per_gpu: 2
+
+  # ranking setting
+  dist_metric: 'euclidean'
+  norm_feat: False
+  dist_cuda: True
