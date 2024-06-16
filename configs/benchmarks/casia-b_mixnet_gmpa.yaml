@@ -1,5 +1,5 @@
-DATA_ROOT: '/data/makang/data/'
-LOGS_ROOT: '/home/makang/code/release/FastGait/records'
+DATA_ROOT: 'Your_DATA_PATH' # The path save CASIA-B dataset 
+LOGS_ROOT: './FastGait/records' # The records folder directory
 
 MODEL:
   # architecture
